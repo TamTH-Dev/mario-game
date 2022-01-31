@@ -17,6 +17,7 @@ function setupViewport() {
 }
 
 function setupPlayer() {
-  const player = new Player(ctx)
-  player.draw()
+  const player = new Player()
+  player.setContext(canvas, ctx)
+  player.animate()
 }

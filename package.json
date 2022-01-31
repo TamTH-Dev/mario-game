@@ -1,0 +1,24 @@
+{
+  "name": "mario-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"yarn watch-js\" \"yarn watch-css\" \"yarn watch-html\"",
+    "watch-html": "static-server",
+    "watch-css": "sass -w scss/index.scss css/index.css",
+    "watch-js": "tsc -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/TamTH-Dev/mario-game#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.13",
+    "concurrently": "^7.0.0",
+    "node-sass": "^7.0.1",
+    "sass": "^1.49.0",
+    "static-server": "^2.2.1",
+    "typescript": "^4.5.5"
+  }
+}
