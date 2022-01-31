@@ -1,7 +1,9 @@
-import Player from './Player.js'
+import { Player } from './objects'
+import { initPlayerState } from './helpers'
+import './styles/index.scss'
 
-const canvas = document.querySelector('#canvas')
-const ctx = canvas.getContext('2d')
+const canvas = document.querySelector('#canvas') as HTMLCanvasElement
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
 window.addEventListener('load', init)
 window.addEventListener('resize', setupViewport)
@@ -17,7 +19,12 @@ function setupViewport() {
 }
 
 function setupPlayer() {
-  const player = new Player()
-  player.setContext(canvas, ctx)
+  const player = new Player({
+    ...initPlayerState,
+    context: {
+      canvas,
+      ctx,
+    },
+  })
   player.animate()
 }
