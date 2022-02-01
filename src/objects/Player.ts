@@ -4,11 +4,11 @@ const GRAVITY = 2.5
 
 class Player {
   private position: ICoordinate
-  private velocity: ICoordinate
   private width: number
   private height: number
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
+  private velocity: ICoordinate
   private keysState: {
     leftKey: {
       pressed: boolean
@@ -20,19 +20,19 @@ class Player {
 
   constructor({
     position,
-    velocity,
     width,
     height,
     context,
+    velocity,
   }: {
     position: ICoordinate
-    velocity: ICoordinate
     width: number
     height: number
     context: {
       canvas: HTMLCanvasElement
       ctx: CanvasRenderingContext2D
     }
+    velocity: ICoordinate
   }) {
     this.position = position
     this.velocity = velocity
@@ -48,12 +48,6 @@ class Player {
         pressed: false,
       },
     }
-  }
-
-  animate() {
-    requestAnimationFrame(() => this.animate())
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.update()
   }
 
   update() {
@@ -108,6 +102,24 @@ class Player {
       releaseKeyRight: () => {
         this.keysState.rightKey.pressed = false
       },
+      standOn: () => {
+        this.velocity.y = 0
+      }
+    }
+  }
+
+  getPosition() {
+    return this.position
+  }
+
+  getVelocity() {
+    return this.velocity
+  }
+
+  getSize() {
+    return {
+      playerWidth: this.width,
+      playerHeight: this.height,
     }
   }
 }

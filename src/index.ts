@@ -1,6 +1,7 @@
-import { Player } from './objects'
+import { Platform, Player } from './objects'
 import {
   initPlayerState,
+  initPlatformState,
   KEY_A,
   KEY_D,
   KEY_W,
@@ -20,7 +21,22 @@ window.addEventListener('resize', setupViewport)
 
 function init() {
   setupViewport()
-  setupPlayer()
+  const player = setupPlayer()
+  const platform = setupPlatform()
+
+  run(player, platform)
+}
+
+function run(player: Player, platform: Platform) {
+  requestAnimationFrame(() => run(player, platform))
+
+  // Clear entirely frame after each update
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  player.update()
+  platform.draw()
+
+  isPlayerStandingOnPlatform(player, platform)
 }
 
 function setupViewport() {
@@ -36,8 +52,6 @@ function setupPlayer() {
       ctx,
     },
   })
-
-  player.animate()
 
   const {
     turnLeft,
@@ -95,4 +109,36 @@ function setupPlayer() {
       }
     }
   })
+
+  return player
+}
+
+function setupPlatform() {
+  const platform = new Platform({
+    ...initPlatformState,
+    context: {
+      canvas,
+      ctx,
+    },
+  })
+
+  return platform
+}
+
+function isPlayerStandingOnPlatform(player: Player, platform: Platform) {
+  const playerPosition = player.getPosition()
+  const { playerWidth, playerHeight } = player.getSize()
+  const playerVelocity = player.getVelocity()
+  const platformPosition = platform.getPosition()
+  const { platformWidth } = platform.getSize()
+  const { standOn } = player.getActions()
+
+  if (
+    playerPosition.y + playerHeight <= platformPosition.y &&
+    playerPosition.y + playerHeight + playerVelocity.y >= platformPosition.y &&
+    playerPosition.x + playerWidth >= platformPosition.x &&
+    playerPosition.x <= platformPosition.x + platformWidth
+  ) {
+    standOn()
+  }
 }

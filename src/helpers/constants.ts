@@ -11,6 +11,14 @@ export const initPlayerState = {
     y: 0,
   },
 }
+export const initPlatformState = {
+  width: 200,
+  height: 20,
+  position: {
+    x: 200,
+    y: 100,
+  },
+}
 
 // Keys
 export const KEY_A = 'KeyA'
