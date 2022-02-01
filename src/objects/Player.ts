@@ -1,14 +1,22 @@
 import { ICoordinate } from 'src/types'
 
-const GRAVITY = 0.5
+const GRAVITY = 2.5
 
 class Player {
   private position: ICoordinate
   private velocity: ICoordinate
   private width: number
   private height: number
-  private canvas!: HTMLCanvasElement
-  private ctx!: CanvasRenderingContext2D
+  private canvas: HTMLCanvasElement
+  private ctx: CanvasRenderingContext2D
+  private keysState: {
+    leftKey: {
+      pressed: boolean
+    }
+    rightKey: {
+      pressed: boolean
+    }
+  }
 
   constructor({
     position,
@@ -32,21 +40,13 @@ class Player {
     this.height = height
     this.canvas = context.canvas
     this.ctx = context.ctx
-  }
-
-  draw() {
-    this.ctx.fillStyle = '#ff2200'
-    this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
-  }
-
-  update() {
-    this.draw()
-    this.position.y += this.velocity.y
-
-    if (this.position.y + this.height + this.velocity.y <= this.canvas.height) {
-      this.velocity.y += GRAVITY
-    } else {
-      this.velocity.y = 0
+    this.keysState = {
+      leftKey: {
+        pressed: false,
+      },
+      rightKey: {
+        pressed: false,
+      },
     }
   }
 
@@ -55,8 +55,61 @@ class Player {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.update()
   }
-}
 
-export type TPlayer = typeof Player
+  update() {
+    this.draw()
+    this.position.x += this.velocity.x
+    this.position.y += this.velocity.y
+    this.moveVertically()
+    this.moveHorizontally()
+  }
+
+  draw() {
+    this.ctx.fillStyle = '#ff2200'
+    this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+
+  moveVertically() {
+    if (this.position.y + this.height + this.velocity.y <= this.canvas.height) {
+      this.velocity.y += GRAVITY
+    } else {
+      this.velocity.y = 0
+    }
+  }
+
+  moveHorizontally() {
+    const { leftKey, rightKey } = this.keysState
+    if (leftKey.pressed) {
+      this.velocity.x -= 1
+    } else if (rightKey.pressed) {
+      this.velocity.x += 1
+    } else {
+      this.velocity.x = 0
+    }
+  }
+
+  getActions() {
+    return {
+      turnUp: () => {
+        this.velocity.y -= 40
+      },
+      turnDown: () => {
+        this.velocity.y += 40
+      },
+      turnLeft: () => {
+        this.keysState.leftKey.pressed = true
+      },
+      turnRight: () => {
+        this.keysState.rightKey.pressed = true
+      },
+      releaseKeyLeft: () => {
+        this.keysState.leftKey.pressed = false
+      },
+      releaseKeyRight: () => {
+        this.keysState.rightKey.pressed = false
+      },
+    }
+  }
+}
 
 export default Player

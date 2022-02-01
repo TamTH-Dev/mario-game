@@ -1,3 +1,4 @@
+// Object's state
 export const initPlayerState = {
   width: 30,
   height: 30,
@@ -10,3 +11,13 @@ export const initPlayerState = {
     y: 0,
   },
 }
+
+// Keys
+export const KEY_A = 'KeyA'
+export const KEY_D = 'KeyD'
+export const KEY_W = 'KeyW'
+export const KEY_S = 'KeyS'
+export const KEY_LEFT = 'ArrowLeft'
+export const KEY_RIGHT = 'ArrowRight'
+export const KEY_UP = 'ArrowUp'
+export const KEY_DOWN = 'ArrowDown'
