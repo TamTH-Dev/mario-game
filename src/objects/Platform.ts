@@ -33,6 +33,14 @@ class Platform {
     this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 
+  translateToLeftSide() {
+    this.position.x -= 5
+  }
+
+  translateToRightSide() {
+    this.position.x += 5
+  }
+
   getPosition() {
     return this.position
   }

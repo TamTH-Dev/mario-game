@@ -73,9 +73,9 @@ class Player {
 
   moveHorizontally() {
     const { leftKey, rightKey } = this.keysState
-    if (leftKey.pressed) {
+    if (leftKey.pressed && this.position.x > 100) {
       this.velocity.x -= 1
-    } else if (rightKey.pressed) {
+    } else if (rightKey.pressed && this.position.x < 400) {
       this.velocity.x += 1
     } else {
       this.velocity.x = 0
@@ -104,7 +104,7 @@ class Player {
       },
       standOn: () => {
         this.velocity.y = 0
-      }
+      },
     }
   }
 
@@ -121,6 +121,10 @@ class Player {
       playerWidth: this.width,
       playerHeight: this.height,
     }
+  }
+
+  getKeysState() {
+    return this.keysState
   }
 }
 

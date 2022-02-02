@@ -1,16 +1,5 @@
-import { Platform, Player } from './objects'
-import {
-  initPlayerState,
-  initPlatformState,
-  KEY_A,
-  KEY_D,
-  KEY_W,
-  KEY_S,
-  KEY_LEFT,
-  KEY_RIGHT,
-  KEY_UP,
-  KEY_DOWN,
-} from './helpers'
+import { Platform, Platforms, Player } from './objects'
+import { initPlayerState, processPlatforms, processPlayer } from './helpers'
 import './styles/index.scss'
 
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement
@@ -22,21 +11,22 @@ window.addEventListener('resize', setupViewport)
 function init() {
   setupViewport()
   const player = setupPlayer()
-  const platform = setupPlatform()
+  const platforms = setupPlatforms()
 
-  run(player, platform)
+  processPlayer(player)
+
+  runGame(player, platforms)
 }
 
-function run(player: Player, platform: Platform) {
-  requestAnimationFrame(() => run(player, platform))
+function runGame(player: Player, platforms: Platform[]) {
+  requestAnimationFrame(() => runGame(player, platforms))
 
   // Clear entirely frame after each update
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   player.update()
-  platform.draw()
 
-  isPlayerStandingOnPlatform(player, platform)
+  processPlatforms(platforms, player)
 }
 
 function setupViewport() {
@@ -53,92 +43,17 @@ function setupPlayer() {
     },
   })
 
-  const {
-    turnLeft,
-    turnRight,
-    turnUp,
-    turnDown,
-    releaseKeyLeft,
-    releaseKeyRight,
-  } = player.getActions()
-
-  window.addEventListener('keydown', (event: KeyboardEvent) => {
-    switch (event.code) {
-      case KEY_A:
-      case KEY_LEFT: {
-        turnLeft()
-        break
-      }
-      case KEY_D:
-      case KEY_RIGHT: {
-        turnRight()
-        break
-      }
-      case KEY_W:
-      case KEY_UP: {
-        turnUp()
-        break
-      }
-      case KEY_S:
-      case KEY_DOWN: {
-        turnDown()
-        break
-      }
-    }
-  })
-
-  window.addEventListener('keyup', (event: KeyboardEvent) => {
-    switch (event.code) {
-      case KEY_A:
-      case KEY_LEFT: {
-        releaseKeyLeft()
-        break
-      }
-      case KEY_D:
-      case KEY_RIGHT: {
-        releaseKeyRight()
-        break
-      }
-      case KEY_W:
-      case KEY_UP: {
-        break
-      }
-      case KEY_S:
-      case KEY_DOWN: {
-        break
-      }
-    }
-  })
-
   return player
 }
 
-function setupPlatform() {
-  const platform = new Platform({
-    ...initPlatformState,
+function setupPlatforms() {
+  const platforms = new Platforms({
+    numOfPlatforms: 3,
     context: {
       canvas,
       ctx,
     },
   })
 
-  return platform
-}
-
-function isPlayerStandingOnPlatform(player: Player, platform: Platform) {
-  const playerPosition = player.getPosition()
-  const { playerWidth, playerHeight } = player.getSize()
-  const playerVelocity = player.getVelocity()
-  const platformPosition = platform.getPosition()
-  const { platformWidth } = platform.getSize()
-  const { standOn } = player.getActions()
-
-  if (
-    playerPosition.y + playerHeight <= platformPosition.y &&
-    playerPosition.y + playerHeight + playerVelocity.y >= platformPosition.y &&
-    playerPosition.x + playerWidth >= platformPosition.x &&
-    playerPosition.x <= platformPosition.x + platformWidth
-  ) {
-    standOn()
-  }
+  return platforms.getPlatforms()
 }
