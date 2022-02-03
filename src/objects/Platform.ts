@@ -1,4 +1,4 @@
-import { ICoordinate } from 'src/types'
+import { ICoordinate } from '../types'
 
 class Platform {
   private position: ICoordinate
@@ -6,31 +6,30 @@ class Platform {
   private height: number
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
+  private image: CanvasImageSource
 
   constructor({
     position,
-    width,
-    height,
+    image,
     context,
   }: {
     position: ICoordinate
-    width: number
-    height: number
+    image: CanvasImageSource
     context: {
       canvas: HTMLCanvasElement
       ctx: CanvasRenderingContext2D
     }
   }) {
     this.position = position
-    this.width = width
-    this.height = height
+    this.image = image
+    this.width = (image.width as number) || 0
+    this.height = (image.height as number) || 0
     this.canvas = context.canvas
     this.ctx = context.ctx
   }
 
   draw() {
-    this.ctx.fillStyle = '#ff00ff'
-    this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+    this.ctx.drawImage(this.image, this.position.x, this.position.y)
   }
 
   translateToLeftSide() {

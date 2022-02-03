@@ -56,13 +56,16 @@ function translatePlatform(platform: Platform, player: Player) {
     player.getPosition().x >= 400
   ) {
     platform.translateToLeftSide()
+    window.translateOffset += 5
   }
 
   if (
     player.getKeysState().leftKey.pressed &&
     player.getVelocity().x === 0 &&
-    player.getPosition().x <= 100
+    player.getPosition().x <= 100 &&
+    window.translateOffset > 0
   ) {
     platform.translateToRightSide()
+    window.translateOffset -= 5
   }
 }

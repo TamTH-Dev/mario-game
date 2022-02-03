@@ -1,5 +1,7 @@
 import Platform from './Platform'
-import { getRandomPlatform } from '../helpers'
+import { PlatformImage } from '../assets/images'
+
+const windowHeight = window.innerHeight
 
 class Platforms {
   private platforms: Platform[]
@@ -18,16 +20,22 @@ class Platforms {
   }) {
     this.canvas = context.canvas
     this.ctx = context.ctx
-    this.platforms = [...new Array(numOfPlatforms)].map(
-      () =>
-        new Platform({
-          ...getRandomPlatform(),
-          context: {
-            canvas: this.canvas,
-            ctx: this.ctx,
-          },
-        })
-    )
+    this.platforms = [...new Array(numOfPlatforms)].map((_, index: number) => {
+      const image = new Image()
+      image.src = PlatformImage
+
+      return new Platform({
+        position: {
+          x: index * image.width - index * 3,
+          y: windowHeight - 150,
+        },
+        image,
+        context: {
+          canvas: this.canvas,
+          ctx: this.ctx,
+        },
+      })
+    })
   }
 
   getPlatforms() {

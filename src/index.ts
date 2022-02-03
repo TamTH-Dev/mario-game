@@ -10,6 +10,9 @@ window.addEventListener('resize', setupViewport)
 
 function init() {
   setupViewport()
+
+  window.translateOffset = 0
+
   const player = setupPlayer()
   const platforms = setupPlatforms()
 
@@ -21,12 +24,12 @@ function init() {
 function runGame(player: Player, platforms: Platform[]) {
   requestAnimationFrame(() => runGame(player, platforms))
 
-  // Clear entirely frame after each update
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-  player.update()
+  ctx.fillStyle = '#fff'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   processPlatforms(platforms, player)
+
+  player.update()
 }
 
 function setupViewport() {

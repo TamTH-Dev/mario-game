@@ -1,0 +1,8 @@
+export { default as BackgroundImage } from './background.png'
+export { default as HillsImage } from './hills.png'
+export { default as PlatformImage } from './platform.png'
+export { default as PlatformSmallTallImage } from './platformSmallTall.png'
+export { default as SpriteRunLeftImage } from './spriteRunLeft.png'
+export { default as SpriteRunLeftRight } from './spriteRunRight.png'
+export { default as SpriteStandLeftImage } from './spriteStandLeft.png'
+export { default as SpriteStandRightImage } from './spriteStandRight.png'
