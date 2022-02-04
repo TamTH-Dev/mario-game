@@ -1,17 +1,18 @@
-export function getPlatformPosition() {
-  const windowHeight = window.innerHeight
-  const minX = 100
-  const maxX = 800
-  // const minY = 100
-  // const maxY = 400
+export function getRandomPlatformPosition(
+  image: CanvasImageSource,
+  index: number
+) {
+  const minDistance = 0
+  const maxDistance = 100
 
-  const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX
-  // const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY
+  const randomDistance =
+    Math.floor(Math.random() * (maxDistance - minDistance + 1)) + minDistance
 
   return {
-    position: {
-      x,
-      y: windowHeight - 100,
-    },
+    x:
+      index === 0
+        ? 0
+        : index * (image.width as number) - index * 3 + randomDistance,
+    y: window.innerHeight - (image.height as number),
   }
 }

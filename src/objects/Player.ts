@@ -66,9 +66,10 @@ class Player {
   moveVertically() {
     if (this.position.y + this.height + this.velocity.y <= this.canvas.height) {
       this.velocity.y += GRAVITY
-    } else {
-      this.velocity.y = 0
     }
+    // else {
+    //   this.velocity.y = 0
+    // }
   }
 
   moveHorizontally() {
@@ -110,6 +111,10 @@ class Player {
 
   getPosition() {
     return this.position
+  }
+
+  setPosition(position: ICoordinate) {
+    this.position = position
   }
 
   getVelocity() {

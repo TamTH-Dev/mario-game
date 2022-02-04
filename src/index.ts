@@ -2,7 +2,8 @@ import { Platform, Platforms, Player, Scene, Scenes } from './objects'
 import {
   initPlayerState,
   processPlatforms,
-  processPlayer,
+  processPlayerEvents,
+  clearPlayerEvents,
   processScenes,
 } from './helpers'
 import './styles/index.scss'
@@ -10,25 +11,29 @@ import './styles/index.scss'
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
-window.addEventListener('load', init)
+window.addEventListener('load', () => {
+  init()
+  runGame()
+})
 window.addEventListener('resize', setupViewport)
 
+let player: Player
+let platforms: Platform[]
+let scenes: Scene[]
+
 function init() {
-  setupViewport()
-
   window.translateOffset = 0
+  setupViewport()
+  player = setupPlayer()
+  platforms = setupPlatforms()
+  scenes = setupScenes()
 
-  const player = setupPlayer()
-  const platforms = setupPlatforms()
-  const scenes = setupScenes()
-
-  processPlayer(player)
-
-  runGame(player, platforms, scenes)
+  processPlayerEvents(player)
+  console.log('init')
 }
 
-function runGame(player: Player, platforms: Platform[], scenes: Scene[]) {
-  requestAnimationFrame(() => runGame(player, platforms, scenes))
+function runGame() {
+  const animationFrame = requestAnimationFrame(() => runGame())
 
   ctx.fillStyle = '#fff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -39,7 +44,7 @@ function runGame(player: Player, platforms: Platform[], scenes: Scene[]) {
 
   player.update()
 
-  console.log(window.translateOffset)
+  trackGameover(player, animationFrame)
 }
 
 function setupViewport() {
@@ -81,4 +86,13 @@ function setupScenes() {
   })
 
   return scenes.getScenes()
+}
+
+function trackGameover(player: Player, animationFrame: number) {
+  if (player.getPosition().y <= canvas.height) return
+
+  cancelAnimationFrame(animationFrame)
+  clearPlayerEvents(player)
+  window.removeEventListener('load', init)
+  init()
 }

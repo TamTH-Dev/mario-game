@@ -1,7 +1,6 @@
 import Platform from './Platform'
 import { PlatformImage } from '../assets/images'
-
-const windowHeight = window.innerHeight
+import { getRandomPlatformPosition } from '../helpers'
 
 class Platforms {
   private platforms: Platform[]
@@ -25,10 +24,7 @@ class Platforms {
       image.src = PlatformImage
 
       return new Platform({
-        position: {
-          x: index * image.width - index * 3,
-          y: windowHeight - image.height,
-        },
+        position: getRandomPlatformPosition(image, index),
         image,
         context: {
           canvas: this.canvas,

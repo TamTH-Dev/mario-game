@@ -10,17 +10,19 @@ import {
   KEY_DOWN,
 } from '../helpers'
 
-export function processPlayer(player: Player) {
-  const {
-    turnLeft,
-    turnRight,
-    turnUp,
-    turnDown,
-    releaseKeyLeft,
-    releaseKeyRight,
-  } = player.getActions()
+export function processPlayerEvents(player: Player) {
+  window.addEventListener('keydown', handleKeydownEvents(player))
+  window.addEventListener('keyup', handleKeyupEvents(player))
+}
 
-  window.addEventListener('keydown', (event: KeyboardEvent) => {
+export function clearPlayerEvents(player: Player) {
+  window.removeEventListener('keydown', handleKeydownEvents(player))
+  window.removeEventListener('keyup', handleKeyupEvents(player))
+}
+
+function handleKeydownEvents(player: Player) {
+  const { turnLeft, turnRight, turnUp, turnDown } = player.getActions()
+  return (event: KeyboardEvent) => {
     switch (event.code) {
       case KEY_A:
       case KEY_LEFT: {
@@ -43,9 +45,12 @@ export function processPlayer(player: Player) {
         break
       }
     }
-  })
+  }
+}
 
-  window.addEventListener('keyup', (event: KeyboardEvent) => {
+function handleKeyupEvents(player: Player) {
+  const { releaseKeyLeft, releaseKeyRight } = player.getActions()
+  return (event: KeyboardEvent) => {
     switch (event.code) {
       case KEY_A:
       case KEY_LEFT: {
@@ -66,5 +71,5 @@ export function processPlayer(player: Player) {
         break
       }
     }
-  })
+  }
 }
