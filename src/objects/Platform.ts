@@ -1,4 +1,5 @@
 import { ICoordinate } from '../types'
+import { PLATFORM_TRANSLATE_FACTOR } from '../helpers'
 
 class Platform {
   private position: ICoordinate
@@ -33,11 +34,11 @@ class Platform {
   }
 
   translateToLeftSide() {
-    this.position.x -= 5
+    this.position.x -= PLATFORM_TRANSLATE_FACTOR
   }
 
   translateToRightSide() {
-    this.position.x += 5
+    this.position.x += PLATFORM_TRANSLATE_FACTOR
   }
 
   getPosition() {

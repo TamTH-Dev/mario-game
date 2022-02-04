@@ -1,6 +1,7 @@
-import Platform from './Platform'
 import { PlatformImage } from '../assets/images'
-import { getRandomPlatformPosition } from '../helpers'
+import { getRandomNumber } from '../helpers'
+
+import Platform from './Platform'
 
 class Platforms {
   private platforms: Platform[]
@@ -19,12 +20,30 @@ class Platforms {
   }) {
     this.canvas = context.canvas
     this.ctx = context.ctx
-    this.platforms = [...new Array(numOfPlatforms)].map((_, index: number) => {
+    let cumulativeOffset = 0
+    let calcOffset = 0
+    this.platforms = [...new Array(numOfPlatforms)].map(() => {
       const image = new Image()
       image.src = PlatformImage
 
+      cumulativeOffset += calcOffset
+      // Reset calc offset after used
+      calcOffset = 0
+      // Calc offset is equal to sum of current image's width and random distance (if it exists)
+      // between current image and the next one
+      calcOffset += image.width
+
+      const randomDistance = getRandomNumber(0, 200)
+      // Ensure 2 platforms're not very near if there's distance between them
+      if (randomDistance >= 100) {
+        calcOffset += randomDistance
+      }
+
       return new Platform({
-        position: getRandomPlatformPosition(image, index),
+        position: {
+          x: cumulativeOffset,
+          y: window.innerHeight - (image.height as number),
+        },
         image,
         context: {
           canvas: this.canvas,

@@ -1,6 +1,5 @@
 import { Platform, Platforms, Player, Scene, Scenes } from './objects'
 import {
-  initPlayerState,
   processPlatforms,
   processPlayerEvents,
   clearPlayerEvents,
@@ -11,29 +10,26 @@ import './styles/index.scss'
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
-window.addEventListener('load', () => {
-  init()
-  runGame()
-})
+window.addEventListener('load', init)
 window.addEventListener('resize', setupViewport)
-
-let player: Player
-let platforms: Platform[]
-let scenes: Scene[]
 
 function init() {
   window.translateOffset = 0
+
   setupViewport()
-  player = setupPlayer()
-  platforms = setupPlatforms()
-  scenes = setupScenes()
+  const player = setupPlayer()
+  const platforms = setupPlatforms()
+  const scenes = setupScenes()
 
   processPlayerEvents(player)
-  console.log('init')
+
+  runGame(player, platforms, scenes)
 }
 
-function runGame() {
-  const animationFrame = requestAnimationFrame(() => runGame())
+function runGame(player: Player, platforms: Platform[], scenes: Scene[]) {
+  const animationFrame = requestAnimationFrame(() =>
+    runGame(player, platforms, scenes)
+  )
 
   ctx.fillStyle = '#fff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -54,7 +50,16 @@ function setupViewport() {
 
 function setupPlayer() {
   const player = new Player({
-    ...initPlayerState,
+    width: 30,
+    height: 30,
+    position: {
+      x: 200,
+      y: 100,
+    },
+    velocity: {
+      x: 0,
+      y: 0,
+    },
     context: {
       canvas,
       ctx,
@@ -66,7 +71,7 @@ function setupPlayer() {
 
 function setupPlatforms() {
   const platforms = new Platforms({
-    numOfPlatforms: 3,
+    numOfPlatforms: 4,
     context: {
       canvas,
       ctx,
@@ -92,7 +97,10 @@ function trackGameover(player: Player, animationFrame: number) {
   if (player.getPosition().y <= canvas.height) return
 
   cancelAnimationFrame(animationFrame)
+
   clearPlayerEvents(player)
+
   window.removeEventListener('load', init)
+
   init()
 }

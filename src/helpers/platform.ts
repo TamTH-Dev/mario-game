@@ -1,5 +1,10 @@
 import { ICoordinate } from '../types'
 import { Platform, Player } from '../objects'
+import {
+  GAME_TRANSLATE_FACTOR,
+  PLAYER_MIN_X_OFFSET,
+  PLAYER_MAX_X_OFFSET,
+} from '../helpers'
 
 export function processPlatforms(platforms: Platform[], player: Player) {
   const playerPosition = player.getPosition()
@@ -53,19 +58,19 @@ function translatePlatform(platform: Platform, player: Player) {
   if (
     player.getKeysState().rightKey.pressed &&
     player.getVelocity().x === 0 &&
-    player.getPosition().x >= 400
+    player.getPosition().x >= PLAYER_MAX_X_OFFSET
   ) {
     platform.translateToLeftSide()
-    window.translateOffset += 5
+    window.translateOffset += GAME_TRANSLATE_FACTOR
   }
 
   if (
     player.getKeysState().leftKey.pressed &&
     player.getVelocity().x === 0 &&
-    player.getPosition().x <= 100 &&
+    player.getPosition().x <= PLAYER_MIN_X_OFFSET &&
     window.translateOffset > 0
   ) {
     platform.translateToRightSide()
-    window.translateOffset -= 5
+    window.translateOffset -= GAME_TRANSLATE_FACTOR
   }
 }

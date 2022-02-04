@@ -1,6 +1,11 @@
-import { ICoordinate } from 'src/types'
-
-const GRAVITY = 2.5
+import { ICoordinate } from '../types'
+import {
+  GRAVITY,
+  PLAYER_VELOCITY_X,
+  PLAYER_VELOCITY_Y,
+  PLAYER_MIN_X_OFFSET,
+  PLAYER_MAX_X_OFFSET,
+} from '../helpers'
 
 class Player {
   private position: ICoordinate
@@ -15,6 +20,9 @@ class Player {
     }
     rightKey: {
       pressed: boolean
+    }
+    upKey: {
+      pressedCount: number
     }
   }
 
@@ -47,6 +55,9 @@ class Player {
       rightKey: {
         pressed: false,
       },
+      upKey: {
+        pressedCount: 0,
+      },
     }
   }
 
@@ -67,17 +78,14 @@ class Player {
     if (this.position.y + this.height + this.velocity.y <= this.canvas.height) {
       this.velocity.y += GRAVITY
     }
-    // else {
-    //   this.velocity.y = 0
-    // }
   }
 
   moveHorizontally() {
     const { leftKey, rightKey } = this.keysState
-    if (leftKey.pressed && this.position.x > 100) {
-      this.velocity.x -= 1
-    } else if (rightKey.pressed && this.position.x < 400) {
-      this.velocity.x += 1
+    if (leftKey.pressed && this.position.x > PLAYER_MIN_X_OFFSET) {
+      this.velocity.x -= PLAYER_VELOCITY_X
+    } else if (rightKey.pressed && this.position.x < PLAYER_MAX_X_OFFSET) {
+      this.velocity.x += PLAYER_VELOCITY_X
     } else {
       this.velocity.x = 0
     }
@@ -86,10 +94,14 @@ class Player {
   getActions() {
     return {
       turnUp: () => {
-        this.velocity.y -= 40
+        // Prevent pressing up key continuously
+        if (this.keysState.upKey.pressedCount >= 2) return
+
+        this.velocity.y -= PLAYER_VELOCITY_Y
+        this.keysState.upKey.pressedCount += 1
       },
       turnDown: () => {
-        this.velocity.y += 40
+        this.velocity.y += PLAYER_VELOCITY_Y
       },
       turnLeft: () => {
         this.keysState.leftKey.pressed = true
@@ -105,16 +117,13 @@ class Player {
       },
       standOn: () => {
         this.velocity.y = 0
+        this.keysState.upKey.pressedCount = 0
       },
     }
   }
 
   getPosition() {
     return this.position
-  }
-
-  setPosition(position: ICoordinate) {
-    this.position = position
   }
 
   getVelocity() {

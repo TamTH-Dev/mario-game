@@ -1,4 +1,5 @@
 import { ICoordinate } from '../types'
+import { SCENE_TRANSLATE_FACTOR } from '../helpers'
 
 class Scene {
   private position: ICoordinate
@@ -43,13 +44,12 @@ class Scene {
   }
 
   translateToLeftSide() {
-    this.position.x -= 3
+    this.position.x -= SCENE_TRANSLATE_FACTOR
   }
 
   translateToRightSide() {
-    this.position.x += 3
+    this.position.x += SCENE_TRANSLATE_FACTOR
   }
-
 }
 
 export default Scene
