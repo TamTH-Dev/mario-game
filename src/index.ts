@@ -1,5 +1,10 @@
-import { Platform, Platforms, Player } from './objects'
-import { initPlayerState, processPlatforms, processPlayer } from './helpers'
+import { Platform, Platforms, Player, Scene, Scenes } from './objects'
+import {
+  initPlayerState,
+  processPlatforms,
+  processPlayer,
+  processScenes,
+} from './helpers'
 import './styles/index.scss'
 
 const canvas = document.querySelector('#canvas') as HTMLCanvasElement
@@ -15,21 +20,26 @@ function init() {
 
   const player = setupPlayer()
   const platforms = setupPlatforms()
+  const scenes = setupScenes()
 
   processPlayer(player)
 
-  runGame(player, platforms)
+  runGame(player, platforms, scenes)
 }
 
-function runGame(player: Player, platforms: Platform[]) {
-  requestAnimationFrame(() => runGame(player, platforms))
+function runGame(player: Player, platforms: Platform[], scenes: Scene[]) {
+  requestAnimationFrame(() => runGame(player, platforms, scenes))
 
   ctx.fillStyle = '#fff'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+  processScenes(scenes, player)
+
   processPlatforms(platforms, player)
 
   player.update()
+
+  console.log(window.translateOffset)
 }
 
 function setupViewport() {
@@ -59,4 +69,16 @@ function setupPlatforms() {
   })
 
   return platforms.getPlatforms()
+}
+
+function setupScenes() {
+  const scenes = new Scenes({
+    numOfScenes: 2,
+    context: {
+      canvas,
+      ctx,
+    },
+  })
+
+  return scenes.getScenes()
 }

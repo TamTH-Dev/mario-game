@@ -27,7 +27,7 @@ class Platforms {
       return new Platform({
         position: {
           x: index * image.width - index * 3,
-          y: windowHeight - 150,
+          y: windowHeight - image.height,
         },
         image,
         context: {
