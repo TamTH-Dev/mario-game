@@ -35,7 +35,7 @@ class Platforms {
 
       const randomDistance = getRandomNumber(0, 200)
       // Ensure 2 platforms're not very near if there's distance between them
-      if (randomDistance >= 100) {
+      if (randomDistance >= 150) {
         calcOffset += randomDistance
       }
 

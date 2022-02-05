@@ -50,8 +50,6 @@ function setupViewport() {
 
 function setupPlayer() {
   const player = new Player({
-    width: 30,
-    height: 30,
     position: {
       x: 200,
       y: 100,

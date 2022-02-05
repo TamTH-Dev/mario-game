@@ -5,15 +5,63 @@ import {
   PLAYER_VELOCITY_Y,
   PLAYER_MIN_X_OFFSET,
   PLAYER_MAX_X_OFFSET,
+  createImage,
 } from '../helpers'
+import {
+  SpriteRunLeftImage,
+  SpriteRunRightImage,
+  SpriteStandLeftImage,
+  SpriteStandRightImage,
+} from '../assets/images'
+
+enum SpriteStyle {
+  RunLeft = 'RUN_LEFT',
+  RunRight = 'RUN_RIGHT',
+  StandLeft = 'STAND_LEFT',
+  StandRight = 'STAND_RIGHT',
+}
+
+const SPRITE_STYLE_MAP = {
+  RUN_LEFT: {
+    image: createImage(SpriteRunLeftImage),
+    cropWidth: 341,
+    width: 127.875,
+    action: 'run',
+  },
+  RUN_RIGHT: {
+    image: createImage(SpriteRunRightImage),
+    cropWidth: 341,
+    width: 127.875,
+    action: 'run',
+  },
+  STAND_LEFT: {
+    image: createImage(SpriteStandLeftImage),
+    cropWidth: 177,
+    width: 66,
+    action: 'stand',
+  },
+  STAND_RIGHT: {
+    image: createImage(SpriteStandRightImage),
+    cropWidth: 177,
+    width: 66,
+    action: 'stand',
+  },
+}
 
 class Player {
   private position: ICoordinate
-  private width: number
-  private height: number
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
   private velocity: ICoordinate
+  private width: number
+  private height: number
+  private currentSprite: {
+    image: CanvasImageSource
+    cropWidth: number
+    width: number
+    action: string
+  }
+  private frames: number
   private keysState: {
     leftKey: {
       pressed: boolean
@@ -28,14 +76,10 @@ class Player {
 
   constructor({
     position,
-    width,
-    height,
     context,
     velocity,
   }: {
     position: ICoordinate
-    width: number
-    height: number
     context: {
       canvas: HTMLCanvasElement
       ctx: CanvasRenderingContext2D
@@ -44,8 +88,6 @@ class Player {
   }) {
     this.position = position
     this.velocity = velocity
-    this.width = width
-    this.height = height
     this.canvas = context.canvas
     this.ctx = context.ctx
     this.keysState = {
@@ -59,9 +101,20 @@ class Player {
         pressedCount: 0,
       },
     }
+    this.setSpriteStyle(SpriteStyle.StandRight)
+    this.width = 66
+    this.height = 150
+    this.frames = 0
   }
 
   update() {
+    this.frames++
+    if (this.frames > 59 && this.currentSprite.action === 'stand') {
+      this.frames = 0
+    } else if (this.frames > 30 && this.currentSprite.action === 'run') {
+      this.frames = 0
+    }
+
     this.draw()
     this.position.x += this.velocity.x
     this.position.y += this.velocity.y
@@ -70,12 +123,24 @@ class Player {
   }
 
   draw() {
-    this.ctx.fillStyle = '#ff2200'
-    this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+    this.ctx.drawImage(
+      this.currentSprite.image,
+      this.currentSprite.cropWidth * this.frames,
+      0,
+      this.currentSprite.cropWidth,
+      400,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    )
   }
 
   moveVertically() {
-    if (this.position.y + this.height + this.velocity.y <= this.canvas.height) {
+    if (
+      this.position.y + (this.height as number) + this.velocity.y <=
+      this.canvas.height
+    ) {
       this.velocity.y += GRAVITY
     }
   }
@@ -89,6 +154,11 @@ class Player {
     } else {
       this.velocity.x = 0
     }
+  }
+
+  setSpriteStyle(style: SpriteStyle) {
+    this.currentSprite = SPRITE_STYLE_MAP[style]
+    this.width = this.currentSprite.width
   }
 
   getActions() {
@@ -105,15 +175,19 @@ class Player {
       },
       turnLeft: () => {
         this.keysState.leftKey.pressed = true
+        this.setSpriteStyle(SpriteStyle.RunLeft)
       },
       turnRight: () => {
         this.keysState.rightKey.pressed = true
+        this.setSpriteStyle(SpriteStyle.RunRight)
       },
       releaseKeyLeft: () => {
         this.keysState.leftKey.pressed = false
+        this.setSpriteStyle(SpriteStyle.StandLeft)
       },
       releaseKeyRight: () => {
         this.keysState.rightKey.pressed = false
+        this.setSpriteStyle(SpriteStyle.StandRight)
       },
       standOn: () => {
         this.velocity.y = 0
